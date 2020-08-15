@@ -18,6 +18,20 @@ router.get('/', async (req: Request, res: Response) => {
 
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
+router.get('/:id', async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const item = await FeedItem.findByPk(id);
+
+    if(item) {
+        if(item.url) {
+            item.url = AWS.getGetSignedUrl(item.url); // This looks like it gets a refreshed URL using the old one?
+            res.send(item);
+        }
+    }
+    else {
+        res.send(404).send("No data entry found.");
+    }
+});
 
 // update a specific resource
 router.patch('/:id', 
